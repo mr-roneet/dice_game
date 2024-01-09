@@ -4,7 +4,7 @@ import TotalScore from "./TotalScore";
 import RoleDice from "./RoleDice";
 import { useState } from "react";
 import { Button, OutlineButton } from "../styled/Button";
-import { Rules } from "./Rules";
+import RulesModal from "./RulesModal";
 
 function GamePlay() {
   const [score, setScore] = useState(0);
@@ -25,13 +25,16 @@ function GamePlay() {
     const randomNumber = generateRandomNumber(1, 7);
     setCurrentDice(() => randomNumber);
 
-    if (selectedNumber === randomNumber) {
-      setScore((prev) => prev + randomNumber);
-    } else {
-      setScore((prev) => prev - 2);
-    }
+    // Calculate the new score
+    const newScore =
+      selectedNumber === randomNumber
+        ? score + randomNumber
+        : Math.max(score - 2, 0);
+
+    setScore(newScore);
     setSelectedNumber(" ");
   };
+
   const resetScore = () => {
     setScore(0);
   };
@@ -50,10 +53,10 @@ function GamePlay() {
       <div className="btns">
         <OutlineButton onClick={resetScore}>Reset Score</OutlineButton>
         <Button onClick={() => setShowRules((prev) => !prev)}>
-          {showRules ? "Hide" : "Show"}Show Rules
+          {showRules ? "Hide" : "Show"} Rules
         </Button>
       </div>
-      {showRules && <Rules />}
+      {showRules && <RulesModal onClose={() => setShowRules(false)} />}
     </MainContainer>
   );
 }
